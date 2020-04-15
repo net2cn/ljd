@@ -766,6 +766,69 @@ def write(fd, ast):
 
 	_process_queue(fd, visitor.print_queue)
 
+def get_lines(ast):
+	assert isinstance(ast, nodes.FunctionDefinition)
+
+	visitor = Visitor()
+
+	traverse.traverse(visitor, ast.statements)
+
+	return _process_queue_to_str(visitor.print_queue)
+
+def _process_queue_to_str(queue):
+	content = ''
+	indent = 0
+
+	line_broken = True
+
+	for i, cmd in enumerate(queue):
+		assert isinstance(cmd, tuple)
+
+		if cmd[0] == CMD_START_STATEMENT:
+			# assert line_broken
+			pass
+		elif cmd[0] == CMD_END_STATEMENT:
+			content += '\n'
+			line_broken = True
+
+			next_cmd = _get_next_significant(queue, i)
+
+			if next_cmd[0] not in (CMD_END_BLOCK, CMD_START_BLOCK):
+				assert next_cmd[0] == CMD_START_STATEMENT
+
+				if next_cmd[1] != cmd[1]			\
+						or cmd[1] >= STATEMENT_IF	\
+						or next_cmd[1] >= STATEMENT_IF:
+					content += '\n'
+		elif cmd[0] == CMD_END_LINE:
+			content += '\n'
+			line_broken = True
+		elif cmd[0] == CMD_START_BLOCK:
+			indent += 1
+		elif cmd[0] == CMD_END_BLOCK:
+			indent -= 1
+
+			assert indent >= 0
+		else:
+			assert cmd[0] == CMD_WRITE
+
+			if line_broken:
+				content += indent * '\t'
+				line_broken = False
+
+			_id, fmt, args, kargs = cmd
+
+			if len(args) + len(kargs) > 0:
+				text = fmt.format(*args, **kargs)
+			elif isinstance(fmt, str):
+				text = fmt
+			else:
+				text = str(fmt)
+
+			content += text
+
+	return content
+
 
 def _get_next_significant(queue, i):
 	i += 1

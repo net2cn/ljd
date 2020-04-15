@@ -1,5 +1,8 @@
-LuaJIT raw-bytecode decompiler (LJD)
+LuaJIT raw-bytecode decompiler (LJD) MOD VER.
 ===
+
+## THIS VERSION INCLUDED SOME THIRD-PARTY MODIFICATION TO FIX SOME BUGS.
+## HOWEVER, IT DEFINITELY NEED SOME MORE PATCHES.
 
 The original name was _ljwthgnd_ as in _LuaJIT 'What The Hell is Going On'
 Decompiler_ named under the LuaJIT C sources variable naming convention.
@@ -22,8 +25,7 @@ Python __3.0+__ from python.org
 How to use it
 ---
 
-There is no argument parsing right now, so comment out things in the ```main.py```
-script and launch it as in ```main.py path/to/file.luac```
+```python main.py -i [INPUT_FILE_OR_FOLDER] -o [OUTPUT_FOLDER_IF_FOLDER_AS_INPUT]```
 
 TODO
 ---
@@ -71,3 +73,6 @@ There is a lot of work to do, in the order of priority
 	   The only way to guess them is to watch local variable scopes, which
 	   is simple enough in case of non-stripped bytecode and a bit
 	   harder otherwise.
+
+The software was originally developed by Andrian Nord.
+Source: https://github.com/NightNord/ljd

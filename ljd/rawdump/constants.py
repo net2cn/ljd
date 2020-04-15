@@ -56,7 +56,7 @@ def _read_complex_constants(parser, complex_constants):
 
 			string = parser.stream.read_bytes(length)
 
-			complex_constants.append(string.decode("ascii"))
+			complex_constants.append(string.decode("utf-8"))
 		elif constant_type == BCDUMP_KGC_TAB:
 			table = ljd.bytecode.constants.Table()
 
